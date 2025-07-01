@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/minibog_React/static/css/main.e5c09654.css",
-    "main.js": "/minibog_React/static/js/main.d2eefba2.js",
-    "static/js/453.11cc9f12.chunk.js": "/minibog_React/static/js/453.11cc9f12.chunk.js",
-    "index.html": "/minibog_React/index.html",
-    "main.e5c09654.css.map": "/minibog_React/static/css/main.e5c09654.css.map",
-    "main.d2eefba2.js.map": "/minibog_React/static/js/main.d2eefba2.js.map",
-    "453.11cc9f12.chunk.js.map": "/minibog_React/static/js/453.11cc9f12.chunk.js.map"
+    "main.css": "/UnimedBeta/static/css/main.0fa5369d.css",
+    "main.js": "/UnimedBeta/static/js/main.121289be.js",
+    "static/js/453.11cc9f12.chunk.js": "/UnimedBeta/static/js/453.11cc9f12.chunk.js",
+    "index.html": "/UnimedBeta/index.html",
+    "main.0fa5369d.css.map": "/UnimedBeta/static/css/main.0fa5369d.css.map",
+    "main.121289be.js.map": "/UnimedBeta/static/js/main.121289be.js.map",
+    "453.11cc9f12.chunk.js.map": "/UnimedBeta/static/js/453.11cc9f12.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e5c09654.css",
-    "static/js/main.d2eefba2.js"
+    "static/css/main.0fa5369d.css",
+    "static/js/main.121289be.js"
   ]
 }
