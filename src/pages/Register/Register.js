@@ -175,23 +175,71 @@ const Register = () => {
       </div>
 
       {/* Modal de Termos de Uso */}
-      {showModal && (
+        {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-lg">
-            <h2 className="text-xl font-bold text-green-700 mb-2">Termos de Uso</h2>
-            <p className="text-sm text-gray-700 mb-4 h-60 overflow-y-auto">
-              {/* Coloque aqui o conteúdo completo dos termos */}
-              [Conteúdo dos termos...]
-            </p>
+            <h2 className="text-xl font-bold text-green-700 mb-2">Termos de Uso e Política de Privacidade</h2>
+            <div className="text-sm text-gray-700 mb-4 h-60 overflow-y-auto space-y-4">
+              <p>
+                <strong>1. Finalidade do Aplicativo:</strong><br />
+                Este aplicativo é destinado ao uso por profissionais da saúde e colaboradores autorizados para o gerenciamento de dados clínicos e cirúrgicos. Seu uso é restrito ao ambiente hospitalar, com fins operacionais e administrativos.
+              </p>
+
+              <p>
+                <strong>2. Consentimento e Aceitação dos Termos:</strong><br />
+                Ao utilizar o sistema, você declara que leu, compreendeu e concorda com os termos aqui descritos, assumindo total responsabilidade pela forma como utiliza o aplicativo.
+              </p>
+
+              <p>
+                <strong>3. Responsabilidades do Usuário:</strong><br />
+                O acesso ao sistema é pessoal e intransferível. O usuário compromete-se a proteger suas credenciais, não compartilhar dados sensíveis, respeitar o sigilo profissional e cumprir a legislação vigente. Todas as ações realizadas com seu login serão de sua responsabilidade.
+              </p>
+
+              <p>
+                <strong>4. Privacidade e LGPD:</strong><br />
+                Em conformidade com a Lei nº 13.709/2018 (LGPD), os dados pessoais e sensíveis inseridos no sistema são tratados exclusivamente para fins médicos, administrativos e legais. Asseguramos confidencialidade, integridade e segurança dos dados mediante medidas técnicas adequadas.
+              </p>
+
+              <p>
+                <strong>5. Isenção de Responsabilidade do Desenvolvedor:</strong><br />
+                O desenvolvedor do sistema não se responsabiliza por uso indevido por parte dos usuários. Todo conteúdo e ações realizadas no sistema são de responsabilidade exclusiva dos usuários autenticados.
+              </p>
+
+              <p>
+                <strong>6. Auditoria e Monitoramento:</strong><br />
+                O sistema poderá registrar logs de acesso e atividade, com fins de segurança, auditoria e rastreabilidade.
+              </p>
+
+              <p>
+                <strong>7. Revogação de Acesso:</strong><br />
+                O acesso poderá ser suspenso ou revogado em caso de uso indevido, violação dos termos ou encerramento de vínculo com a instituição.
+              </p>
+
+              <p>
+                <strong>8. Atualizações dos Termos:</strong><br />
+                Os termos podem ser atualizados periodicamente. O uso contínuo do sistema após atualizações será considerado como aceitação tácita das novas condições.
+              </p>
+
+              <p>
+                <strong>9. Foro e Legislação Aplicável:</strong><br />
+                Estes termos são regidos pelas leis brasileiras, sendo eleito o foro da comarca da instituição hospitalar responsável pelo sistema para dirimir eventuais controvérsias.
+              </p>
+
+              <p className="font-semibold text-green-700">
+                ✅ Declaro que li e aceito os Termos de Uso e Política de Privacidade.
+              </p>
+            </div>
+
             <button
               onClick={() => setShowModal(false)}
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md w-full mt-4"
             >
               Fechar e Concordar
             </button>
           </div>
         </div>
       )}
+
     </div>
   );
 };
