@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { useAuthValue } from "../../context/AuthContext";
 import { useFetchDocument } from "../../hooks/useFetchDocument";
-import { useUpdateDocument } from "../../hooks/useUpdateDocument";
+import {useInsertDocument} from "../../hooks/useInsertDocument";
 
 const CadastrarCliente = () => {
   const { id } = useParams();
@@ -26,28 +26,10 @@ const CadastrarCliente = () => {
   const [formError, setFormError] = useState("");
 
   const { user } = useAuthValue();
-  const { updateDocument, response } = useUpdateDocument("clientesCirurgia");
+  const { insertDocument, response } = useInsertDocument("clientesCirurgia");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (paciente) {
-      setNome(paciente.nome || "");
-      setMae(paciente.mae || "");
-      setNascimento(paciente.nascimento || "");
-      setConvenio(paciente.convenio || "");
-      setMedico(paciente.medico || "");
-      setCirurgia(paciente.cirurgia || "");
-      setDataProcedimento(paciente.dataProcedimento || "");
-      setSalaCirurgia(paciente.salaCirurgia || "");
-      setHorarioCirurgia(paciente.horarioCirurgia || "");
-      setOpme(paciente.opme || "não");
-      setOpmeDetalhe(paciente.opmeDetalhe || "");
-      setScopia(paciente.scopia || "não");
-      setArmarioVideo(paciente.armarioVideo || "não");
-      setMaterialCirurgico(paciente.materialCirurgico || "");
-    }
-  }, [paciente]);
-
+ 
   useEffect(() => {
     if (nascimento) {
       const birthDate = new Date(nascimento);
@@ -81,7 +63,7 @@ const CadastrarCliente = () => {
       return;
     }
 
-    updateDocument(id, {
+    insertDocument({
       nome,
       mae,
       nascimento,
@@ -304,7 +286,7 @@ const CadastrarCliente = () => {
             disabled={response.loading}
             className="md:col-span-2 mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md transition duration-300"
           >
-            {response.loading ? "Atualizando..." : "Atualizar Cliente"}
+            {response.loading ? "Cadastrando..." : "Cadastrar Cliente"}
           </button>
 
           {formError && (

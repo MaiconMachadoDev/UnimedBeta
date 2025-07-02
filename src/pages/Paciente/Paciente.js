@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useFetchDocument } from "../../hooks/useFetchDocument";
+import { Link } from "react-router-dom";
 
 const Paciente = () => {
   const { id } = useParams();
@@ -25,6 +26,14 @@ const Paciente = () => {
   return (
     <div className="min-h-screen bg-gradient-to-r from-green-100 via-white to-green-100 flex items-center justify-center px-4 py-10">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
+        <div className="mb-4">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center text-green-700 hover:text-green-900 text-sm font-semibold"
+          >
+            ← Voltar
+          </Link>
+        </div>
         <h2 className="text-2xl font-bold text-green-700 text-center mb-6">
           Detalhes do Procedimento Cirúrgico
         </h2>
