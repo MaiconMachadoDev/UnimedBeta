@@ -8,6 +8,7 @@ import {
   PencilSquareIcon,
   TrashIcon,
   EyeIcon,
+  TvIcon
 } from "@heroicons/react/24/solid";
 
 const Dashboard = () => {
@@ -131,7 +132,15 @@ const Dashboard = () => {
               </div>
 
               {/* Ações - ocupa linha inteira no mobile */}
+
               <div className="flex justify-start md:justify-center gap-2 flex-wrap mt-2 md:mt-0 col-span-1">
+                <Link
+                  to={`/avaliacaoanestesica/${paciente.id}`}
+                  className="p-2 border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded"
+                  title="Visualizar"
+                >
+                  <TvIcon className="w-5 h-5" />
+                </Link>
                 <Link
                   to={`/paciente/${paciente.id}`}
                   className="p-2 border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded"

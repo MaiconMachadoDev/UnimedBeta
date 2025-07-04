@@ -100,6 +100,7 @@ const Navbar = () => {
                 Cadastrar Paciente
               </NavLink>
             </li>
+            
             <li>
               <NavLink
                 to="/dashboard"

@@ -25,7 +25,7 @@ import Search from './pages/Search/Search';
 import Paciente from './pages/Paciente/Paciente';
 import EditPaciente from './pages/EditPaciente/EditPaciente';
 import CadastrarClient from './pages/CadastratCliente/CadastrarCliente';
-
+import AvaliacaoAnestesica from './pages/AvaliacaoAnestesica/AvaliacaoAnestesica';
 
 
 function App() {
@@ -58,6 +58,7 @@ function App() {
           <Route path='/login' element={!user ? <Login/> : <Navigate to='/'/>}/>
           <Route path='/register' element={!user ? <Register/> : <Navigate to='/'/>}/>
           <Route path='/cliente/register' element={user ? <CadastrarClient/> : <Navigate to='/login'/>}/>
+          <Route path='/avaliacaoanestesica/:id' element={user ? <AvaliacaoAnestesica/> : <Navigate to='/login'/>}/>
           <Route path='/pacient/edit/:id' element={user ? <EditPaciente/> : <Navigate to='/login'/>}/>
           <Route path='/dashboard' element={user ? <Dashboard/> : <Navigate to='/'/>}/>
           
