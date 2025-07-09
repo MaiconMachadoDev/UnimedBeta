@@ -28,7 +28,7 @@ const Home = () => {
           type="text"
           placeholder="Buscar por paciente, médico ou procedimento..."
           onChange={(e) => setQuery(e.target.value)}
-          className="border border-green-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-400"
+          className="border text-xs border-green-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-400"
         />
         <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition duration-300">
           Pesquisar
@@ -56,17 +56,17 @@ const Home = () => {
 
         {!loading && posts && posts.length > 0 && (
           posts.map((clientesCirurgia) => (
-            <div
-              key={clientesCirurgia.id}
-              className="flex flex-col text-center bg-white border border-green-200 rounded-2xl shadow-md p-3 transition hover:shadow-lg w-full sm:max-w-[375px] mx-auto space-y-1"
-            >
-              <h2 className="text-xl font-semibold text-green-700">
-                {clientesCirurgia.cirurgia}
-              </h2>
-              <p className="text-gray-700 text-sm mb-0">
-                <span className="font-semibold">Paciente:</span> {clientesCirurgia.nome}
-              </p>
-              <p className="text-gray-700 text-sm mb-0">
+          <div
+            key={clientesCirurgia.id}
+            className="flex flex-col text-center bg-white border border-green-200 rounded-2xl shadow-md p-3 transition hover:shadow-lg w-full sm:max-w-[375px] mx-auto space-y-1"
+          >
+            <h2 className="text-xl font-semibold text-green-700">
+              {clientesCirurgia.cirurgia}
+            </h2>
+            <p className="text-gray-700 text-sm mb-0">
+              <span className="font-semibold">Paciente:</span> {clientesCirurgia.nome}
+            </p>
+           <p className="text-gray-700 text-sm mb-0">
                 <span className="font-semibold">Mãe:</span> {clientesCirurgia.mae}
               </p>
               <p className="text-gray-700 text-sm mb-0">
@@ -78,23 +78,26 @@ const Home = () => {
               <p className="text-gray-700 text-sm mb-0">
                 <span className="font-semibold">Horário:</span> {clientesCirurgia.horarioCirurgia}
               </p>
-              <p className="text-gray-700 text-sm mt-1 mb-0">
-                Avaliado:{" "}
-                <span className="text-sm bg-red-600 rounded-md text-white font-bold px-2 py-1 select-none">
-                  Não
-                </span>
-              </p>
-
-              <div className="mr-3 flex place-items-center justify-end gap-4 mt-1">
-                <Link
-                  to={`/paciente/${clientesCirurgia.id}`}
-                  className="text-green-700 font-semibold hover:underline text-sm"
-                >
-                  Ver
-                </Link>
-              </div>
+            <p className="text-gray-700 text-sm mt-1 mb-0">
+              Avaliado:{" "}
+              <span
+                className={`text-sm rounded-md text-white font-bold px-2 py-1 select-none ${
+                  clientesCirurgia.AvaliacaoAnestesica ? "bg-green-600" : "bg-red-600"
+                }`}
+              >
+                {clientesCirurgia.AvaliacaoAnestesica ? "Sim" : "Não"}
+              </span>
+            </p>
+            <div className="mr-3 flex place-items-center justify-end gap-4 mt-1">
+              <Link
+                to={`/paciente/${clientesCirurgia.id}`}
+                className="text-green-700 font-semibold hover:underline text-sm"
+              >
+                Ver
+              </Link>
             </div>
-          ))
+          </div>
+        ))
         )}
       </div>
     </div>

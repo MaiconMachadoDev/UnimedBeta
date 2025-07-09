@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useFetchDocuments } from "../../hooks/UseFetchDocuments";
-import { useDeleteDocument } from "../../hooks/useDeleteDocument";
 import {
   ChevronUpIcon,
   ChevronDownIcon,
@@ -15,7 +14,6 @@ const Dashboard = () => {
   const [sortConfig, setSortConfig] = useState(null);
   const [sortedPatients, setSortedPatients] = useState([]);
   const { documents: pacientes, loading } = useFetchDocuments("clientesCirurgia");
-  const { deleteDocument } = useDeleteDocument("clientesCirurgia");
 
   const [showModal, setShowModal] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
@@ -52,13 +50,7 @@ const Dashboard = () => {
     setIsChecked(false);
   };
 
-  const handleConfirmDelete = () => {
-    if (selectedPatientId) {
-      deleteDocument(selectedPatientId);
-      setShowModal(false);
-      setSelectedPatientId(null);
-    }
-  };
+  
 
   const handleCancel = () => {
     setShowModal(false);
@@ -155,56 +147,11 @@ const Dashboard = () => {
                 >
                   <PencilSquareIcon className="w-5 h-5" />
                 </Link>
-                <button
-                  onClick={() => handleDeleteClick(paciente.id)}
-                  className="p-2 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded"
-                  title="Excluir"
-                >
-                  <TrashIcon className="w-5 h-5" />
-                </button>
               </div>
             </div>
           ))}
         </div>
      
-      )}
-
-      {/* Modal de Exclusão */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-lg">
-            <h3 className="text-xl font-bold text-green-800 mb-4">Confirma exclusão?</h3>
-            <p className="mb-4 text-green-700">
-              Esta ação é irreversível. Tem certeza que deseja excluir este paciente?
-            </p>
-            <label className="flex items-center mb-4 text-green-800">
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={(e) => setIsChecked(e.target.checked)}
-                className="mr-2"
-              />
-              Confirmo que quero excluir
-            </label>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={handleCancel}
-                className="px-4 py-2 rounded border border-green-600 text-green-700 hover:bg-green-100 transition"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                disabled={!isChecked}
-                className={`px-4 py-2 rounded ${
-                  isChecked ? "bg-red-600 text-white hover:bg-red-700" : "bg-red-300 text-white cursor-not-allowed"
-                } transition`}
-              >
-                Excluir
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );

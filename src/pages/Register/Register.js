@@ -156,14 +156,11 @@ const Register = () => {
 
           <button
             type="submit"
-            disabled={!acceptedTerms || loading}
-            className={`${
-              acceptedTerms
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-gray-400 cursor-not-allowed"
-            } text-white font-semibold py-2 rounded-md transition duration-300`}
+            disabled={loading}
+            className={`px-4 py-2 rounded-md text-white font-semibold transition-colors duration-200 
+              ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
           >
-            {loading ? "Aguarde..." : "Cadastrar"}
+            {loading ? "Aguarde..." : "Enviar"}
           </button>
 
           {error && (

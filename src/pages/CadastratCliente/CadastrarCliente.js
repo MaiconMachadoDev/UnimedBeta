@@ -81,6 +81,7 @@ const CadastrarCliente = () => {
       armarioVideo,
       uid: user.uid,
       createdBy: user.displayName,
+      AvaliacaoAnestesica: false,
     });
 
     navigate("/dashboard");
