@@ -540,7 +540,7 @@ const handleAlturaChange = (e) => {
             disabled={response.loading}
             className="md:col-span-2 mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md transition duration-300"
           >
-            {response.loading ? "Avaliando..." : "Avalizar Cliente"}
+            {response.loading ? "Avaliando..." : "Avaliar Cliente"}
           </button>
       
     </form>
