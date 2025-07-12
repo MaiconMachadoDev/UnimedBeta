@@ -7,8 +7,15 @@ import {
   PencilSquareIcon,
   TrashIcon,
   EyeIcon,
-  TvIcon
+  TvIcon,
 } from "@heroicons/react/24/solid";
+
+// Função para converter string 'YYYY-MM-DD' em Date local
+function parseDataLocal(dateString) {
+  if (!dateString) return null;
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
 
 const Dashboard = () => {
   const [sortConfig, setSortConfig] = useState(null);
@@ -24,16 +31,28 @@ const Dashboard = () => {
       let sorted = [...pacientes];
       if (sortConfig !== null) {
         sorted.sort((a, b) => {
-          const aVal = a[sortConfig.key];
-          const bVal = b[sortConfig.key];
-          if (sortConfig.key === "createdAt") {
-            return sortConfig.direction === "asc"
-              ? (aVal?.seconds || 0) - (bVal?.seconds || 0)
-              : (bVal?.seconds || 0) - (aVal?.seconds || 0);
+          let aVal = a[sortConfig.key];
+          let bVal = b[sortConfig.key];
+
+          // Para dataProcedimento, converter para Date para comparar
+          if (sortConfig.key === "dataProcedimento") {
+            aVal = parseDataLocal(aVal)?.getTime() || 0;
+            bVal = parseDataLocal(bVal)?.getTime() || 0;
           }
-          return sortConfig.direction === "asc"
-            ? String(aVal || "").localeCompare(String(bVal || ""))
-            : String(bVal || "").localeCompare(String(aVal || ""));
+
+          // Para createdAt que é timestamp do Firebase
+          if (sortConfig.key === "createdAt") {
+            aVal = aVal?.seconds || 0;
+            bVal = bVal?.seconds || 0;
+          }
+
+          if (aVal < bVal) {
+            return sortConfig.direction === "asc" ? -1 : 1;
+          }
+          if (aVal > bVal) {
+            return sortConfig.direction === "asc" ? 1 : -1;
+          }
+          return 0;
         });
       }
       setSortedPatients(sorted);
@@ -49,8 +68,6 @@ const Dashboard = () => {
     setShowModal(true);
     setIsChecked(false);
   };
-
-  
 
   const handleCancel = () => {
     setShowModal(false);
@@ -86,7 +103,25 @@ const Dashboard = () => {
           {/* Cabeçalho escondido no mobile, visível em telas md+ */}
           <div className="hidden md:grid grid-cols-7 gap-4 font-semibold text-green-800 border-b-2 border-green-300 pb-2 mb-2 text-sm">
             <div className="col-span-2">Paciente</div>
-            <div>Data</div>
+            <div
+              className="cursor-pointer select-none"
+              onClick={() => {
+                if (sortConfig?.key === "dataProcedimento" && sortConfig.direction === "asc") {
+                  handleSort("dataProcedimento", "desc");
+                } else {
+                  handleSort("dataProcedimento", "asc");
+                }
+              }}
+            >
+              Data{" "}
+              {sortConfig?.key === "dataProcedimento" ? (
+                sortConfig.direction === "asc" ? (
+                  <ChevronUpIcon className="inline w-4 h-4" />
+                ) : (
+                  <ChevronDownIcon className="inline w-4 h-4" />
+                )
+              ) : null}
+            </div>
             <div>Sala</div>
             <div>Horário</div>
             <div>Médico</div>
@@ -95,7 +130,7 @@ const Dashboard = () => {
 
           {sortedPatients.map((paciente) => (
             <div
-              key={paciente.id}
+              key={paciente.id || paciente.uid}
               className="bg-white rounded-lg shadow p-4 flex flex-col md:grid md:grid-cols-7 gap-2 md:items-center"
             >
               <div className="col-span-2">
@@ -105,7 +140,11 @@ const Dashboard = () => {
 
               <div>
                 <span className="md:hidden text-xs text-green-700 font-semibold">Data:</span>
-                <p>{paciente.dataProcedimento ? new Date(paciente.dataProcedimento).toLocaleDateString("pt-BR") : "-"}</p>
+                <p>
+                  {paciente.dataProcedimento
+                    ? parseDataLocal(paciente.dataProcedimento).toLocaleDateString("pt-BR")
+                    : "-"}
+                </p>
               </div>
 
               <div>
@@ -127,23 +166,24 @@ const Dashboard = () => {
 
               <div className="flex justify-start md:justify-center gap-2 flex-wrap mt-2 md:mt-0 col-span-1">
                 <Link
-                  to={`/avaliacaoanestesica/${paciente.id}`}
+                  to={`/avaliacaoanestesica/${paciente.id || paciente.uid}`}
                   className="p-2 border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded"
-                  title="Visualizar"
+                  title="Visualizar Avaliação Anestésica"
                 >
                   <TvIcon className="w-5 h-5" />
                 </Link>
                 <Link
-                  to={`/paciente/${paciente.id}`}
+                   to={`/paciente/${paciente.id || paciente.uid}`}
+                  state={{ from: "/dashboard" }}
                   className="p-2 border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded"
-                  title="Visualizar"
+                  title="Visualizar Paciente"
                 >
                   <EyeIcon className="w-5 h-5" />
                 </Link>
                 <Link
-                  to={`/pacient/edit/${paciente.id}`}
+                  to={`/pacient/edit/${paciente.id || paciente.uid}`}
                   className="p-2 border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white rounded"
-                  title="Editar"
+                  title="Editar Paciente"
                 >
                   <PencilSquareIcon className="w-5 h-5" />
                 </Link>
@@ -151,7 +191,6 @@ const Dashboard = () => {
             </div>
           ))}
         </div>
-     
       )}
     </div>
   );

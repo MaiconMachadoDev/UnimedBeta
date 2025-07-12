@@ -100,6 +100,21 @@ const Navbar = () => {
                 Cadastrar Paciente
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/cirurgias/mapa"
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  `text-sm px-3 py-2 rounded-md font-medium transition duration-200 ${
+                    isActive
+                      ? "bg-green-700 text-white"
+                      : "text-green-900 hover:bg-green-100"
+                  }`
+                }
+              >
+                Mapa Cirurgico 
+              </NavLink>
+            </li>
             
             <li>
               <NavLink

@@ -26,6 +26,7 @@ import Paciente from './pages/Paciente/Paciente';
 import EditPaciente from './pages/EditPaciente/EditPaciente';
 import CadastrarClient from './pages/CadastratCliente/CadastrarCliente';
 import AvaliacaoAnestesica from './pages/AvaliacaoAnestesica/AvaliacaoAnestesica';
+import MapaCirurgico from './pages/CirurgiasCalendario/MapaCirurgico';
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
           <Route path='/login' element={!user ? <Login/> : <Navigate to='/'/>}/>
           <Route path='/register' element={!user ? <Register/> : <Navigate to='/'/>}/>
           <Route path='/cliente/register' element={user ? <CadastrarClient/> : <Navigate to='/login'/>}/>
+          <Route path='/cirurgias/mapa' element={user ? <MapaCirurgico/> : <Navigate to='/login'/>}/>
           <Route path='/avaliacaoanestesica/:id' element={user ? <AvaliacaoAnestesica/> : <Navigate to='/login'/>}/>
           <Route path='/pacient/edit/:id' element={user ? <EditPaciente/> : <Navigate to='/login'/>}/>
           <Route path='/dashboard' element={user ? <Dashboard/> : <Navigate to='/'/>}/>
