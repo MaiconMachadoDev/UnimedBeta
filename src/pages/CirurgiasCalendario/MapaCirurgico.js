@@ -87,6 +87,7 @@ export default function MapaCirurgico() {
     setDataSelecionada(new Date(calAno, calMes, dia));
     setMostrarCalendario(false);
   }
+  
 
   function mudarMes(diff) {
     let novoMes = calMes + diff;
@@ -101,8 +102,17 @@ export default function MapaCirurgico() {
     setCalMes(novoMes);
     setCalAno(novoAno);
   }
-   function exportarTabelaPDF() {
-  // Filtra apenas pela data, não pela sala
+  function addMinutes(horario, minutos) {
+  if (!horario || typeof minutos !== "number") return "-";
+  const [horas, mins] = horario.split(":").map(Number);
+  const data = new Date();
+  data.setHours(horas);
+  data.setMinutes(mins + minutos);
+  const fimHoras = String(data.getHours()).padStart(2, "0");
+  const fimMinutos = String(data.getMinutes()).padStart(2, "0");
+  return `${horario} - ${fimHoras}:${fimMinutos}`;
+}
+  function exportarTabelaPDF() {
   const pacientesDoDia = pacientes
     ? pacientes.filter((p) => {
         if (!p.dataProcedimento) return false;
@@ -116,29 +126,22 @@ export default function MapaCirurgico() {
       })
     : [];
 
-  // Ordem desejada das salas
   const ordemSalas = ["Bera", "Sala 01", "Sala 02", "Sala 03"];
 
-  // Ordena os pacientes pela ordem das salas
   const pacientesOrdenados = [...pacientesDoDia].sort((a, b) => {
-    const ordemSalas = ["Bera", "Sala 01", "Sala 02", "Sala 03"];
     const idxA = ordemSalas.indexOf(a.salaCirurgia);
     const idxB = ordemSalas.indexOf(b.salaCirurgia);
-    // Ordena por sala
     if ((idxA === -1 ? 99 : idxA) !== (idxB === -1 ? 99 : idxB)) {
       return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
     }
-    // Se for a mesma sala, ordena por horário (assumindo formato HH:mm)
     if (a.horarioCirurgia && b.horarioCirurgia) {
       return a.horarioCirurgia.localeCompare(b.horarioCirurgia);
     }
-    // Se algum não tem horário, joga para o final
     if (!a.horarioCirurgia) return 1;
     if (!b.horarioCirurgia) return -1;
     return 0;
   });
 
-  // Checa se há colunas extras
   const temOpme = pacientesOrdenados.some((p) => p.opme && p.opme.toLowerCase() === "sim");
   const temRaioX = pacientesOrdenados.some((p) => p.raiox && p.raiox.toLowerCase() === "sim");
   const temScopia = pacientesOrdenados.some((p) => p.scopia && p.scopia.toLowerCase() === "sim");
@@ -146,7 +149,6 @@ export default function MapaCirurgico() {
     (p) => p.armarioVideo && p.armarioVideo.toLowerCase() === "sim"
   );
 
-  // Cabeçalho igual ao da tabela
   const header = [
     "Horário",
     "Paciente",
@@ -160,19 +162,34 @@ export default function MapaCirurgico() {
     "Avaliação Anestesia",
   ];
 
-  // Corpo igual ao da tabela
+  const widths = [
+    80,        // Horário
+    120,        // Paciente
+    140,       // Cirurgia
+    ...(temOpme ? [40] : []),
+    ...(temRaioX ? [40] : []),
+    ...(temScopia ? [40] : []),
+    ...(temArmarioVideo ? [50] : []),
+    90,        // Médico
+    60,        // Sala
+    60         // Avaliação Anestesia
+  ];
+
   const body = pacientesOrdenados.map((p) => [
-    p.horarioCirurgia || "-",
-    p.nome,
-    p.cirurgia || "-",
-    ...(temOpme ? [p.opme?.toLowerCase() === "sim" ? "Sim" : "-"] : []),
-    ...(temRaioX ? [p.raiox?.toLowerCase() === "sim" ? "Sim" : "-"] : []),
-    ...(temScopia ? [p.scopia?.toLowerCase() === "sim" ? "Sim" : "-"] : []),
-    ...(temArmarioVideo ? [p.armarioVideo?.toLowerCase() === "sim" ? "Sim" : "-"] : []),
-    p.medico || "-",
-    p.salaCirurgia || "-",
-    p.AvaliacaoAnestesica ? "Sim" : "Não",
-  ]);
+  p.horarioCirurgia
+    ? addMinutes(p.horarioCirurgia, parseInt(p.tempoCirurgia) || 0)
+    : "-",
+  p.nome,
+  p.cirurgia || "-",
+  ...(temOpme ? [p.opme?.toLowerCase() === "sim" ? "Sim" : "-"] : []),
+  ...(temRaioX ? [p.raiox?.toLowerCase() === "sim" ? "Sim" : "-"] : []),
+  ...(temScopia ? [p.scopia?.toLowerCase() === "sim" ? "Sim" : "-"] : []),
+  ...(temArmarioVideo ? [p.armarioVideo?.toLowerCase() === "sim" ? "Sim" : "-"] : []),
+  p.medico || "-",
+  p.salaCirurgia || "-",
+  p.AvaliacaoAnestesica ? "Sim" : "Não",
+]);
+
 
   const docDefinition = {
     pageOrientation: "landscape",
@@ -186,7 +203,7 @@ export default function MapaCirurgico() {
       {
         table: {
           headerRows: 1,
-          widths: Array(header.length).fill("*"),
+          widths,
           body: [header, ...body],
         },
         layout: {
@@ -202,7 +219,7 @@ export default function MapaCirurgico() {
     ],
     styles: {
       header: {
-        fontSize: 18,
+        fontSize: 12,
         bold: true,
         color: "#166534",
       },
@@ -212,40 +229,39 @@ export default function MapaCirurgico() {
         bold: true,
         fontSize: 12,
         alignment: "center",
-        margin: [0, 4, 0, 4],
+        margin: [0, 2, 0, 2],
       },
       tableCell: {
         fontSize: 11,
         color: "#14532d",
-        margin: [0, 3, 0, 3],
+        margin: [0, 2, 0, 2],
       },
       tableCellBold: {
         fontSize: 11,
         color: "#14532d",
         bold: true,
-        margin: [0, 3, 0, 3],
+        margin: [0, 2, 0, 2],
       },
       tableCellCenter: {
         fontSize: 11,
         alignment: "center",
-        margin: [0, 3, 0, 3],
+        margin: [0, 2, 0, 2],
       },
       tableCellSim: {
         fontSize: 11,
         alignment: "center",
         bold: true,
         color: "#15803d",
-        margin: [0, 3, 0, 3],
+        margin: [0, 2, 0, 2],
       },
       tableCellNao: {
         fontSize: 11,
         alignment: "center",
         bold: true,
         color: "#dc2626",
-        margin: [0, 3, 0, 3],
+        margin: [0, 2, 0, 2],
       },
     },
-    // Remova o bloco defaultStyle se tiver font: "Roboto"
   };
 
   pdfMake.createPdf(docDefinition).download("Mapa_Cirurgico.pdf");
@@ -459,7 +475,11 @@ export default function MapaCirurgico() {
                     key={p.id || p.uid}
                     className="border-b border-green-100 hover:bg-green-50"
                   >
-                    <td className="px-4 py-2">{p.horarioCirurgia || "-"}</td>
+                    <td className="px-4 py-2">
+                    {p.horarioCirurgia
+                        ? addMinutes(p.horarioCirurgia, parseInt(p.tempoCirurgia) || 0)
+                        : "-"}
+                    </td>
                     <td className="px-4 py-2 font-medium text-green-900">{p.nome}</td>
                     <td className="px-4 py-2">{p.cirurgia || "-"}</td>
                     {temOpme && (
