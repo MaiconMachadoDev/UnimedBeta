@@ -5,6 +5,7 @@ import {
   updateProfile,
   signOut,
   sendEmailVerification,
+  reload ,
 } from "firebase/auth";
 
 import { useState, useEffect } from "react";
@@ -100,21 +101,33 @@ export const useAuthentication = () => {
 
     setLoading(false);
   };
-const sendVerification = async () => {
-  checkIfIsCancelled();
-  const user = auth.currentUser;
-
-  if (user) {
-    try {
-      await sendEmailVerification(user);
-      alert(`Email de verificação enviado para ${user.email}. Confira sua caixa de entrada.`);
-    } catch (error) {
-      alert("Erro ao enviar email de verificação");
-      console.error("Erro ao enviar email de verificação:", error);
-    }
-  }
+  const actionCodeSettings = {
+  url: "https://maiconmachadodev.github.io/UnimedBeta/", 
 };
-  
+  const sendVerification = async () => {
+    checkIfIsCancelled();
+
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // 1️⃣ Atualiza os dados do usuário para ter o status real
+    await reload(user);
+
+    // 2️⃣ Se já verificado, não envia de novo
+    if (user.emailVerified) {
+      alert("Seu e‑mail já está verificado ✔️");
+      return;
+    }
+
+    // 3️⃣ Caso contrário, envia o e‑mail
+    try {
+      await sendEmailVerification(user,actionCodeSettings);
+      alert(`E‑mail de verificação enviado para ${user.email}. Confira sua caixa de entrada.`);
+    } catch (error) {
+      console.error("Erro ao enviar e‑mail de verificação:", error);
+      alert("Não foi possível enviar o e‑mail de verificação.");
+    }
+  };
 
   useEffect(() => {
     return () => setCancelled(true);
