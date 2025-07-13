@@ -27,6 +27,8 @@ import EditPaciente from './pages/EditPaciente/EditPaciente';
 import CadastrarClient from './pages/CadastratCliente/CadastrarCliente';
 import AvaliacaoAnestesica from './pages/AvaliacaoAnestesica/AvaliacaoAnestesica';
 import MapaCirurgico from './pages/CirurgiasCalendario/MapaCirurgico';
+import Usuario from './pages/Usuario/User';
+import SpinnerUnimed from './components/SpinnerUnimed';
 
 
 function App() {
@@ -41,7 +43,7 @@ function App() {
   },[auth]);
 
   if(loadingUser){
-    return <p>Carregando...</p>
+    return <div className='opacity-75'><SpinnerUnimed /></div>
   }
 
 
@@ -58,6 +60,7 @@ function App() {
           <Route path='/paciente/:id' element={<Paciente/>}/>
           <Route path='/login' element={!user ? <Login/> : <Navigate to='/'/>}/>
           <Route path='/register' element={!user ? <Register/> : <Navigate to='/'/>}/>
+          <Route path='/usuario/:id' element={user ? <Usuario/> : <Navigate to='/login'/>}/>
           <Route path='/cliente/register' element={user ? <CadastrarClient/> : <Navigate to='/login'/>}/>
           <Route path='/cirurgias/mapa' element={user ? <MapaCirurgico/> : <Navigate to='/login'/>}/>
           <Route path='/avaliacaoanestesica/:id' element={user ? <AvaliacaoAnestesica/> : <Navigate to='/login'/>}/>

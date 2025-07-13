@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthentication } from "../../hooks/useAuthentication";
+import SpinnerUnimed from "../../components/SpinnerUnimed";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -85,6 +86,7 @@ const Login = () => {
             </p>
           )}
         </form>
+        {loading && <SpinnerUnimed />}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   signOut,
+  sendEmailVerification,
 } from "firebase/auth";
 
 import { useState, useEffect } from "react";
@@ -99,7 +100,20 @@ export const useAuthentication = () => {
 
     setLoading(false);
   };
+const sendVerification = async () => {
+  checkIfIsCancelled();
+  const user = auth.currentUser;
 
+  if (user) {
+    try {
+      await sendEmailVerification(user);
+      alert(`Email de verificação enviado para ${user.email}. Confira sua caixa de entrada.`);
+    } catch (error) {
+      alert("Erro ao enviar email de verificação");
+      console.error("Erro ao enviar email de verificação:", error);
+    }
+  }
+};
   
 
   useEffect(() => {
@@ -113,5 +127,7 @@ export const useAuthentication = () => {
     logout,
     login,
     loading,
+    sendVerification,
   };
+
 };

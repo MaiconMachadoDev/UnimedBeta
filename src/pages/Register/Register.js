@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthentication } from "../../hooks/useAuthentication";
-
+import SpinnerUnimed from "../../components/SpinnerUnimed";
 const Register = () => {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -169,6 +169,7 @@ const Register = () => {
             </p>
           )}
         </form>
+        {loading && <SpinnerUnimed />}
       </div>
 
       {/* Modal de Termos de Uso */}

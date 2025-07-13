@@ -5,6 +5,7 @@ import { useFetchDocument } from "../../hooks/useFetchDocument";
 import {useInsertDocument} from "../../hooks/useInsertDocument";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config"; // ajuste o caminho se necessário
+import SpinnerUnimed from "../../components/SpinnerUnimed";
 
 const CadastrarCliente = () => {
   const { id } = useParams();
@@ -396,15 +397,16 @@ const CadastrarCliente = () => {
               <option value="sim">Sim</option>
             </select>
           </label>
-
-          <button
+          <div className="md:col-span-2 flex justify-center mt-4">
+              <button
             type="submit"
             disabled={response.loading}
-            className="md:col-span-2 mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md transition duration-300"
+            className=" w-40 md:col-span-2 mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md transition duration-300"
           >
             {response.loading ? "Cadastrando..." : "Cadastrar Cliente"}
           </button>
-
+          </div>
+          
           {formError && (
             <p className="md:col-span-2 text-red-600 bg-red-100 border border-red-300 rounded-md px-4 py-2 text-sm mt-2 text-center">
               {formError}
@@ -448,6 +450,7 @@ const CadastrarCliente = () => {
           )}
 
         </form>
+        {response.loading && <SpinnerUnimed />}
       </div>
     </div>
   );

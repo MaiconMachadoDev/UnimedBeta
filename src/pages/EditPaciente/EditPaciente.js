@@ -5,6 +5,7 @@ import { useFetchDocument } from "../../hooks/useFetchDocument";
 import { useUpdateDocument } from "../../hooks/useUpdateDocument";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
+import SpinnerUnimed from "../../components/SpinnerUnimed";
 
 const EditPaciente = () => {
   const { id } = useParams();
@@ -423,6 +424,7 @@ const EditPaciente = () => {
             </p>
           )}
         </form>
+        {response.loading && <SpinnerUnimed />}
       </div>
     </div>
   );
