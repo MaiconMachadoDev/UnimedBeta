@@ -6,6 +6,7 @@ import {
   signOut,
   sendEmailVerification,
   reload ,
+  sendPasswordResetEmail
 } from "firebase/auth";
 
 import { useState, useEffect } from "react";
@@ -129,6 +130,35 @@ export const useAuthentication = () => {
     }
   };
 
+  async function sendPasswordReset(defaultEmail = "") {
+  const email = prompt("Digite seu e-mail para recuperar a senha:", defaultEmail);
+
+  if (!email || !email.includes("@")) {
+    alert("Por favor, insira um e-mail válido.");
+    return;
+  }
+
+  try {
+    const auth = getAuth();
+    await sendPasswordResetEmail(auth, email);
+    alert("E-mail de recuperação enviado com sucesso!");
+  } catch (error) {
+    console.error("Erro ao enviar e-mail de recuperação:", error);
+
+    // Mensagens de erro mais amigáveis
+    switch (error.code) {
+      case "auth/user-not-found":
+        alert("Nenhuma conta encontrada com esse e-mail.");
+        break;
+      case "auth/invalid-email":
+        alert("O e-mail informado é inválido.");
+        break;
+      default:
+        alert("Não foi possível enviar o e-mail de recuperação. Tente novamente.");
+    }
+  }
+}
+
   useEffect(() => {
     return () => setCancelled(true);
   }, []);
@@ -141,6 +171,7 @@ export const useAuthentication = () => {
     login,
     loading,
     sendVerification,
+    sendPasswordReset
   };
 
 };

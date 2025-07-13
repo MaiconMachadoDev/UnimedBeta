@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import SpinnerUnimed from "../../components/SpinnerUnimed";
+import { NavLink } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -69,6 +70,22 @@ const Login = () => {
             >
               Entrar
             </button>
+          )}
+          {!loading && (
+            <NavLink
+              to="/register"
+              className="text-center text-sm text-green-700 font-semibold rounded-md transition duration-300"
+            >
+              Cadastrar
+            </NavLink>
+          )}
+          {!loading && (
+            <NavLink
+              to="/recoverPassword"
+              className="text-center  text-sm text-green-700 font-semibold  rounded-md transition duration-300"
+            >
+              Esqueci minha  senha
+            </NavLink>
           )}
           {loading && (
             <button

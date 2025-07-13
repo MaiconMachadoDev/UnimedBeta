@@ -17,10 +17,10 @@ const About = () => {
         </p>
 
         <Link
-          to="/cadastro"
+          to="/register"
           className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-md transition duration-300"
         >
-          Cadastrar Novo Paciente
+          Cadastre-se
         </Link>
       </div>
     </div>
