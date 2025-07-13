@@ -79,7 +79,7 @@ const Usuario = () => {
           </NavLink>
         </li>
 
-        {user && (
+        {user?.emailVerified &&  (
           <>
             <li>
               <NavLink
@@ -172,7 +172,7 @@ const Usuario = () => {
               `text-sm px-3 py-2 rounded-md font-medium transition duration-200 ${
                 isActive
                   ? "bg-green-700 text-white"
-                  : " hover:bg-green-100 text-white"
+                  : "hover:bg-green-100"
               }`
             }
           >
@@ -182,7 +182,7 @@ const Usuario = () => {
       </ul>
 
       {/* Avatar com Dropdown */}
-      {user && (
+      {user &&   (
         <div className="relative ml-4" ref={dropdownRef}>
           <button
             onClick={() => setModalOpen((prev) => !prev)}

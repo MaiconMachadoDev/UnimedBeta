@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { getAuth, sendEmailVerification } from "firebase/auth";
-import { app } from "../../firebase/config"; // ajuste se o caminho for diferente
+import { getAuth, sendEmailVerification, onAuthStateChanged } from "firebase/auth";
+import { app } from "../../firebase/config";
 
 export default function AccountPage() {
   const auth = getAuth(app);
@@ -8,6 +8,7 @@ export default function AccountPage() {
   // Modal
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [needsReload, setNeedsReload] = useState(false);
 
   // Foto
   const [photoFile, setPhotoFile] = useState(null);
@@ -27,16 +28,18 @@ export default function AccountPage() {
   });
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      setForm((prev) => ({
-        ...prev,
-        name: user.displayName || "",
-        email: user.email || "",
-        emailVerified: user.emailVerified || false,
-      }));
-    }
-  }, [auth.currentUser]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setForm((prev) => ({
+          ...prev,
+          name: user.displayName || "",
+          email: user.email || "",
+          emailVerified: user.emailVerified || false,
+        }));
+      }
+    });
+    return () => unsubscribe();
+  }, [auth]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,9 +64,27 @@ export default function AccountPage() {
     handleCodeInApp: false,
   };
 
-  const openModal = (msg) => {
+  const openModal = (msg, reload = false) => {
     setModalMessage(msg);
+    setNeedsReload(reload);
     setModalOpen(true);
+  };
+
+  const closeModal = async () => {
+    setModalOpen(false);
+    if (needsReload) {
+      const user = auth.currentUser;
+      if (user) {
+        await user.reload();
+        setForm((prev) => ({ ...prev, emailVerified: user.emailVerified }));
+        if (user.emailVerified) {
+          window.location.reload();
+        }
+      }
+      // setNeedsReload(false);
+    }
+
+
   };
 
   const handleVerifyEmail = async () => {
@@ -81,11 +102,12 @@ export default function AccountPage() {
 
       await sendEmailVerification(user, actionCodeSettings);
       openModal(
-        `E‑mail de verificação enviado para ${user.email}. Confira sua caixa de entrada.`
+        `E‑mail de verificação enviado para ${user.email}. Confira sua caixa de entrada.`,
+        false
       );
     } catch (err) {
       console.error("Erro ao enviar verificação:", err);
-      openModal("Erro ao enviar verificação. Tente novamente.");
+      openModal("Erro ao enviar verificação. Tente novamente.", false);
     }
   };
 
@@ -266,7 +288,7 @@ export default function AccountPage() {
             <h2 className="text-lg font-bold text-green-800 mb-4">Notificação</h2>
             <p className="mb-6 text-gray-700">{modalMessage}</p>
             <button
-              onClick={() => setModalOpen(false)}
+              onClick={closeModal}
               className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition"
             >
               Fechar
