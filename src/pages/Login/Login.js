@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import SpinnerUnimed from "../../components/SpinnerUnimed";
 import { NavLink } from "react-router-dom";
+import Glogo from "../../assets/logoGoogle.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const { login, error: authError, loading } = useAuthentication();
+  const { login, error: authError, loading, signInWithGoogle } = useAuthentication();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,12 +65,44 @@ const Login = () => {
           </label>
 
           {!loading && (
-            <button
+            <div className="flex items-center justify-center mt-4">
+              <button
               type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md transition duration-300"
+              className=" bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-full w-80 transition duration-300"
             >
               Entrar
             </button>
+            </div>
+            
+          )}
+          <div className="flex items-center justify-center mt-4">
+              <div className="flex-grow h-px bg-gray-300"></div>
+              <span className="mx-3 text-gray-600 font-medium text-sm">ou</span>
+              <div className="flex-grow h-px bg-gray-300"></div>
+            </div>
+          {!loading && (
+            <div className="flex justify-center mt-4 border-2 border-gray-400
+                    rounded-full
+                    bg-white
+                    hover:bg-gray-50
+                    transition duration-200">
+                <button
+                  onClick={signInWithGoogle}
+                  type="button"
+                  className="
+                    flex items-center justify-center gap-2
+                    w-80
+                    py-2
+                    
+                  "
+                >
+                  <img src={Glogo} alt="Logo Google" className="w-6 h-6" />
+                  <span className="text-gray-700 font-medium text-sm">
+                    Continuar com o Google
+                  </span>
+                </button>
+              </div>
+            
           )}
           {!loading && (
             <NavLink
@@ -79,6 +112,7 @@ const Login = () => {
               Cadastrar
             </NavLink>
           )}
+       
           {!loading && (
             <NavLink
               to="/recoverPassword"

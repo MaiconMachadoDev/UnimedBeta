@@ -5,48 +5,36 @@ import {
   updateProfile,
   signOut,
   sendEmailVerification,
-  reload ,
-  sendPasswordResetEmail
+  reload,
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
-
 import { useState, useEffect } from "react";
 
 export const useAuthentication = () => {
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(null);
-
-  // deal with memory leak
+  const [loading, setLoading] = useState(false);
   const [cancelled, setCancelled] = useState(false);
 
   const auth = getAuth();
 
   function checkIfIsCancelled() {
-    if (cancelled) {
-      return;
-    }
+    if (cancelled) return;
   }
 
   const createUser = async (data) => {
     checkIfIsCancelled();
-
     setLoading(true);
-
     try {
       const { user } = await createUserWithEmailAndPassword(
         auth,
         data.email,
         data.password
       );
-
-      await updateProfile(user, {
-        displayName: data.displayName,
-      });
-
+      await updateProfile(user, { displayName: data.displayName });
       return user;
     } catch (error) {
-      console.log(error.message);
-      console.log(typeof error.message);
-
       let systemErrorMessage;
 
       if (error.message.includes("Password")) {
@@ -54,35 +42,26 @@ export const useAuthentication = () => {
       } else if (error.message.includes("email-already")) {
         systemErrorMessage = "E-mail já cadastrado.";
       } else {
-        systemErrorMessage = "Ocorreu um erro, por favor tenta mais tarde.";
+        systemErrorMessage = "Ocorreu um erro, por favor tente mais tarde.";
       }
 
       setError(systemErrorMessage);
     }
-
     setLoading(false);
   };
 
- //logout singout
   const logout = () => {
     checkIfIsCancelled();
-
     signOut(auth);
   };
-  // loging
+
   const login = async (data) => {
     checkIfIsCancelled();
-
     setLoading(true);
-    setError(false);
-
+    setError(null);
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
     } catch (error) {
-      console.log(error.message);
-      console.log(typeof error.message);
-      console.log(error.message.includes("user-not"));
-
       let systemErrorMessage;
 
       if (error.message.includes("user-not-found")) {
@@ -90,74 +69,73 @@ export const useAuthentication = () => {
       } else if (error.message.includes("wrong-password")) {
         systemErrorMessage = "Senha incorreta.";
       } else {
-        systemErrorMessage = "Ocorreu um erro, por favor tenta mais tarde.";
+        systemErrorMessage = "Ocorreu um erro, por favor tente mais tarde.";
       }
-
-      console.log(systemErrorMessage);
 
       setError(systemErrorMessage);
     }
-
-    console.log(error);
-
     setLoading(false);
   };
-  const actionCodeSettings = {
-  url: "https://maiconmachadodev.github.io/UnimedBeta/", 
-};
+
   const sendVerification = async () => {
     checkIfIsCancelled();
-
     const user = auth.currentUser;
     if (!user) return;
 
-    // 1️⃣ Atualiza os dados do usuário para ter o status real
     await reload(user);
 
-    // 2️⃣ Se já verificado, não envia de novo
     if (user.emailVerified) {
       alert("Seu e‑mail já está verificado ✔️");
       return;
     }
 
-    // 3️⃣ Caso contrário, envia o e‑mail
     try {
-      await sendEmailVerification(user,actionCodeSettings);
-      alert(`E‑mail de verificação enviado para ${user.email}. Confira sua caixa de entrada.`);
+      await sendEmailVerification(user, {
+        url: "https://maiconmachadodev.github.io/UnimedBeta/",
+      });
+      alert(`E‑mail de verificação enviado para ${user.email}.`);
     } catch (error) {
-      console.error("Erro ao enviar e‑mail de verificação:", error);
+      console.error("Erro ao enviar verificação:", error);
       alert("Não foi possível enviar o e‑mail de verificação.");
     }
   };
 
-  async function sendPasswordReset(defaultEmail = "") {
-  const email = prompt("Digite seu e-mail para recuperar a senha:", defaultEmail);
-
-  if (!email || !email.includes("@")) {
-    alert("Por favor, insira um e-mail válido.");
-    return;
-  }
-
-  try {
-    const auth = getAuth();
-    await sendPasswordResetEmail(auth, email);
-    alert("E-mail de recuperação enviado com sucesso!");
-  } catch (error) {
-    console.error("Erro ao enviar e-mail de recuperação:", error);
-
-    // Mensagens de erro mais amigáveis
-    switch (error.code) {
-      case "auth/user-not-found":
-        alert("Nenhuma conta encontrada com esse e-mail.");
-        break;
-      case "auth/invalid-email":
-        alert("O e-mail informado é inválido.");
-        break;
-      default:
-        alert("Não foi possível enviar o e-mail de recuperação. Tente novamente.");
+  const sendPasswordReset = async (defaultEmail = "") => {
+    const email = prompt("Digite seu e-mail:", defaultEmail);
+    if (!email || !email.includes("@")) {
+      alert("Por favor, insira um e-mail válido.");
+      return;
     }
-  }
-}
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("E-mail de recuperação enviado com sucesso!");
+    } catch (error) {
+      switch (error.code) {
+        case "auth/user-not-found":
+          alert("Nenhuma conta encontrada com esse e-mail.");
+          break;
+        case "auth/invalid-email":
+          alert("O e-mail informado é inválido.");
+          break;
+        default:
+          alert("Erro ao enviar e‑mail. Tente novamente.");
+      }
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log("Usuário autenticado com Google:", result.user);
+    } catch (error) {
+      console.error("Erro no login com Google:", error);
+      alert("Erro ao fazer login com Google.");
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     return () => setCancelled(true);
@@ -166,12 +144,12 @@ export const useAuthentication = () => {
   return {
     auth,
     createUser,
-    error,
-    logout,
     login,
-    loading,
+    logout,
     sendVerification,
-    sendPasswordReset
+    sendPasswordReset,
+    signInWithGoogle,
+    error,
+    loading,
   };
-
 };

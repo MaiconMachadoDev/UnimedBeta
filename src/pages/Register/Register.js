@@ -75,7 +75,7 @@ const Register = () => {
   }, [authError]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-green-100 via-white to-green-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-r from-green-100 via-white to-green-100 flex items-center justify-center px-4 py-6">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-2xl font-bold text-green-800 text-center mb-2">Cadastre-se</h1>
         <p className="text-gray-600 text-center mb-6">Preencha seus dados para acesso</p>
@@ -179,14 +179,16 @@ const Register = () => {
             </span>
           </label>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`px-4 py-2 rounded-md text-white font-semibold transition-colors duration-200 
-              ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
-          >
-            {loading ? "Aguarde..." : "Enviar"}
-          </button>
+          <div className="flex items-center justify-center mt-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-80 py-2 rounded-full font-semibold text-white transition duration-300
+                ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
+            >
+              {loading ? "Aguarde..." : "Enviar"}
+            </button>
+          </div>
 
           {error && (
             <p className="text-red-600 bg-red-100 border border-red-300 rounded-md px-4 py-2 text-sm text-center">
