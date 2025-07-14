@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/UnimedBeta/static/css/main.4982e312.css",
-    "main.js": "/UnimedBeta/static/js/main.3772d5d3.js",
+    "main.css": "/UnimedBeta/static/css/main.608bebbc.css",
+    "main.js": "/UnimedBeta/static/js/main.e4ea6699.js",
     "static/js/453.11cc9f12.chunk.js": "/UnimedBeta/static/js/453.11cc9f12.chunk.js",
+    "static/media/logoGoogle.png": "/UnimedBeta/static/media/logoGoogle.ff2fec9b8a94a4643fa4.png",
     "index.html": "/UnimedBeta/index.html",
-    "main.4982e312.css.map": "/UnimedBeta/static/css/main.4982e312.css.map",
-    "main.3772d5d3.js.map": "/UnimedBeta/static/js/main.3772d5d3.js.map",
+    "main.608bebbc.css.map": "/UnimedBeta/static/css/main.608bebbc.css.map",
+    "main.e4ea6699.js.map": "/UnimedBeta/static/js/main.e4ea6699.js.map",
     "453.11cc9f12.chunk.js.map": "/UnimedBeta/static/js/453.11cc9f12.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.4982e312.css",
-    "static/js/main.3772d5d3.js"
+    "static/css/main.608bebbc.css",
+    "static/js/main.e4ea6699.js"
   ]
 }
