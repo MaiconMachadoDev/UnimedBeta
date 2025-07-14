@@ -28,7 +28,7 @@ const Login = () => {
   }, [authError]);
 
   return (
-    <div className="min-h-[80vh] bg-gradient-to-r from-green-100 via-white to-green-100 flex items-center justify-center px-4">
+    <div className="min-h-[80vh] bg-gradient-to-r from-green-100 via-white to-green-100 flex items-center justify-center px-4 py-6 ">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-2xl font-bold text-green-700 text-center mb-2">
           Entrar

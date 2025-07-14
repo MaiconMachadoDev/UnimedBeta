@@ -1,20 +1,29 @@
 import { useState, useEffect } from "react";
 import { getAuth, sendEmailVerification, onAuthStateChanged } from "firebase/auth";
 import { app } from "../../firebase/config";
+import { useAuthentication } from "../../hooks/useAuthentication";
+import { useNavigate } from "react-router-dom";
 
 export default function AccountPage() {
   const auth = getAuth(app);
+  const navigate = useNavigate();
+  const {
+    updateUserName,
+    deleteUserAccount,
+    loading: authLoading,
+    error: authError,
+    logout,
+  } = useAuthentication();
 
-  // Modal
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [needsReload, setNeedsReload] = useState(false);
-
-  // Foto
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [reauthModalOpen, setReauthModalOpen] = useState(false);
   const [photoFile, setPhotoFile] = useState(null);
   const [photoURL, setPhotoURL] = useState(null);
 
-  // Formulário
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -53,10 +62,15 @@ export default function AccountPage() {
     setPhotoURL(URL.createObjectURL(file));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ ...form, photoFile });
-    openModal("Dados salvos com sucesso (simulação).");
+
+    try {
+      await updateUserName(form.name);
+      openModal("Dados salvos com sucesso ✔️");
+    } catch {
+      openModal("Erro ao salvar os dados. Tente novamente.");
+    }
   };
 
   const actionCodeSettings = {
@@ -81,10 +95,7 @@ export default function AccountPage() {
           window.location.reload();
         }
       }
-      // setNeedsReload(false);
     }
-
-
   };
 
   const handleVerifyEmail = async () => {
@@ -101,15 +112,30 @@ export default function AccountPage() {
       }
 
       await sendEmailVerification(user, actionCodeSettings);
-      openModal(
-        `E‑mail de verificação enviado para ${user.email}. Confira sua caixa de entrada.`,
-        false
-      );
+      openModal(`E‑mail de verificação enviado para ${user.email}. Confira sua caixa de entrada.`, false);
     } catch (err) {
       console.error("Erro ao enviar verificação:", err);
       openModal("Erro ao enviar verificação. Tente novamente.", false);
     }
   };
+const CONFIRM_TEXT = "sim quero excluir minha conta";
+  const handleDeleteAccount = async () => {
+  try {
+    await deleteUserAccount();
+    alert("Conta excluída com sucesso.");
+    navigate("/entrar", { replace: true });
+  } catch (err) {
+    if (err.code === "auth/requires-recent-login") {
+      setReauthModalOpen(true);      // abre modal para login novamente
+    } else {
+      console.error(err);
+      openModal("Erro ao excluir conta. Tente novamente.");
+    }
+  } finally {
+    setConfirmModalOpen(false);
+    setDeleteConfirmText("");
+  }
+};
 
   const { role, emailVerified } = form;
 
@@ -147,8 +173,6 @@ export default function AccountPage() {
             </label>
             <p className="text-xs text-gray-500">Clique na foto para alterar</p>
           </div>
-
-          {/* Nome */}
           <label className="flex flex-col gap-1">
             <span className="text-sm text-gray-700">Nome</span>
             <input
@@ -271,16 +295,114 @@ export default function AccountPage() {
               />
             </label>
           )}
-
-          <button
+          <div className="flex justify-center">
+            <button
             type="submit"
-            className="mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md"
+            className="mt-4  bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-full w-80 transition duration-300"
           >
             Salvar
           </button>
+          </div>
+           
+           <div className="flex justify-center">
+            <button
+            type="button"
+            onClick={() => setConfirmModalOpen(true)}
+            className="mt-2 text-sm text-red-600 hover:underline hover:bg-red-600 hover:text-white  px-3 py-2 rounded-full w-80 transition duration-300"
+          >
+            Excluir conta
+          </button>
+           </div>
+          
         </form>
       </div>
+      {reauthModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center">
+            <h2 className="text-lg font-semibold text-red-700 mb-4">
+              Sessão expirada
+            </h2>
+            <p className="text-sm text-gray-700 mb-6">
+              Por segurança, faça login novamente para concluir a exclusão da conta.
+            </p>
 
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setReauthModalOpen(false)}
+                className="px-4 py-2 text-sm bg-gray-200 rounded-md hover:bg-gray-300"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={() => {
+                  logout();                 // encerra sessão
+                  navigate("/entrar", { replace: true });  // ou "/register"
+                }}
+                className="px-4 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-md"
+              >
+                Sair e entrar/cadastrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 mx-4 text-center">
+            <h2 className="text-lg font-bold text-green-800 mb-4">Notificação</h2>
+            <p className="mb-6 text-gray-700">{modalMessage}</p>
+            <button
+              onClick={closeModal}
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {confirmModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-lg font-semibold text-red-700 mb-4">Tem certeza?</h2>
+            <p className="text-sm text-gray-700 mb-4">
+              Esta ação é <strong>irreversível</strong>. Para confirmar, digite:
+              <br />
+              <code className="font-semibold">{CONFIRM_TEXT}</code>
+            </p>
+
+            <input
+              type="text"
+              className="w-full border rounded-md px-3 py-2 mb-4"
+              placeholder={`Digite: "${CONFIRM_TEXT}"`}
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value.toLowerCase())}
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setConfirmModalOpen(false)}
+                className="px-4 py-2 text-sm bg-gray-200 rounded-md hover:bg-gray-300"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteConfirmText !== CONFIRM_TEXT}
+                className={`px-4 py-2 text-sm rounded-md text-white transition ${
+                  deleteConfirmText === CONFIRM_TEXT
+                    ? "bg-red-600 hover:bg-red-700 cursor-pointer"
+                    : "bg-red-300 cursor-not-allowed"
+                }`}
+              >
+                Excluir conta
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Modal bonito */}
       {modalOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -296,6 +418,7 @@ export default function AccountPage() {
           </div>
         </div>
       )}
+      
     </>
   );
 }
