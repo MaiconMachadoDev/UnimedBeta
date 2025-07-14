@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
+import { sendEmailVerification } from "firebase/auth";
+import { auth } from "../../firebase/config";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import SpinnerUnimed from "../../components/SpinnerUnimed";
+
+const actionCodeSettings = {
+  url: "https://maiconmachadodev.github.io/UnimedBeta/",
+  handleCodeInApp: false,
+};
+
 const Register = () => {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -9,44 +17,61 @@ const Register = () => {
   const [perfil, setPerfil] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showModal, setShowModal] = useState(false);
 
   const { createUser, error: authError, loading } = useAuthentication();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError("");
+    setSuccess("");
 
     if (!acceptedTerms) {
       setError("É preciso aceitar os termos de uso.");
       return;
     }
-
     if (password !== confirmPassword) {
-      setError("As senhas precisam ser iguais");
+      setError("As senhas precisam ser iguais.");
       return;
     }
 
-    const user = {
+    const res = await createUser({
       displayName,
       email,
+      password,
       telefone,
       telefone2,
       perfil,
-      password,
-    };
+    });
 
-    const res = await createUser(user);
-    console.log(res);
+    if (res?.error) {
+      setError(res.error.message || "Erro ao criar usuário.");
+      return;
+    }
+
+    const user = auth.currentUser;
+    if (!user) {
+      setError("Usuário não está autenticado para enviar verificação.");
+      return;
+    }
+
+    try {
+      await sendEmailVerification(user, actionCodeSettings);
+      setSuccess(
+        `E‑mail de verificação enviado para ${user.email}. Confira sua caixa de entrada ou spam.`
+      );
+    } catch (err) {
+      console.error("Erro ao enviar e‑mail de verificação:", err);
+      setError("Falha ao enviar e‑mail de verificação. Tente novamente.");
+    }
   };
 
   useEffect(() => {
-    if (authError) {
-      setError(authError);
-    }
+    if (authError) setError(authError);
   }, [authError]);
 
   return (
