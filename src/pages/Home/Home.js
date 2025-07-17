@@ -12,7 +12,7 @@ import { GiDoctorFace } from "react-icons/gi";
 // Componentes
 import Cards from "./Cards/Cards";
 import GraficosHome from "./NavGraficos/GraficosHome";
-import GraficoCirurgioes from "./NavGraficos/GraficoCirurgioes";
+import GraficoCirurgioes from "./NavGraficos/Cirurgioes/GraficoCirurgioes";
 
 // Chart.js
 import {
