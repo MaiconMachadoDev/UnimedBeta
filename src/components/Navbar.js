@@ -186,7 +186,10 @@ const Usuario = () => {
         <div className="relative ml-4" ref={dropdownRef}>
           <button
             onClick={() => setModalOpen((prev) => !prev)}
-            className="relative flex items-center justify-center w-14 h-14 rounded-full bg-green-600 text-white font-bold text-xl select-none mr-10"
+            className="relative flex items-center justify-center 
+  w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 
+  rounded-full bg-green-600 text-white font-bold 
+  text-base sm:text-lg md:text-xl select-none mr-6"
             aria-label="Abrir informações do usuário"
             type="button"
           >

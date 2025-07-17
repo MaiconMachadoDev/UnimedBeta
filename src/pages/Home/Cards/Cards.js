@@ -1,15 +1,13 @@
-import React from 'react';
+import { Link } from "react-router-dom";
 
-const Cards = ({ icon, title, value }) => {
-  return (
-    <div className="bg-white text-dark p-4 rounded-lg shadow-md flex items-center space-x-6">
-      <div className="text-3xl text-gray-500">{icon}</div>
-      <div>
-        <h2 className="text-lg font-semibold">{title}</h2>
-        <p className="text-xl">{value}</p>
-      </div>
-    </div>
-  );
-};
+const Cards = ({ icon, title, onClick }) => (
+  <div
+    onClick={onClick}
+    className="cursor-pointer bg-white rounded shadow p-4 flex flex-col items-center"
+  >
+    <div className="text-4xl mb-2">{icon}</div>
+    <h3 className="text-lg font-semibold">{title}</h3>
+  </div>
+);
 
 export default Cards;

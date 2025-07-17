@@ -30,7 +30,7 @@ import MapaCirurgico from './pages/CirurgiasCalendario/MapaCirurgico';
 import Usuario from './pages/Usuario/User';
 import SpinnerUnimed from './components/SpinnerUnimed';
 import RecoverPassWord from './pages/RecoverPassWord/RecoverPassWord';
-
+import GraficoCirurgiasTotais from './pages/Home/NavGraficos/GraficoCirurgiasTotais';
 
 function App() {
   const [user, setUser]= useState(undefined);
@@ -65,6 +65,7 @@ function App() {
           <Route path='/usuario/:id' element={user ? <Usuario/> : <Navigate to='/login'/>}/>
           <Route path='/cliente/register' element={user ? <CadastrarClient/> : <Navigate to='/login'/>}/>
           <Route path='/cirurgias/mapa' element={user ? <MapaCirurgico/> : <Navigate to='/login'/>}/>
+          <Route path='/dashboard/cirurgias' element={user ? <GraficoCirurgiasTotais/> : <Navigate to='/login'/>}/>
           <Route path='/avaliacaoanestesica/:id' element={user ? <AvaliacaoAnestesica/> : <Navigate to='/login'/>}/>
           <Route path='/pacient/edit/:id' element={user ? <EditPaciente/> : <Navigate to='/login'/>}/>
           <Route path='/dashboard' element={user ? <Dashboard/> : <Navigate to='/'/>}/>

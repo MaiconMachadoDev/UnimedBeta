@@ -11,15 +11,10 @@ import { GiDoctorFace } from "react-icons/gi";
 
 // Componentes
 import Cards from "./Cards/Cards";
-import GraficoCirurgiasPorMes from "./Graficos/GraficoCirurgiasPorMes";
-import GraficoCirurgiasPorAno from "./Graficos/GraficoCirurgiasPorAno";
-import GraficoEspecialidadePorAno from "./Graficos/GraficoCirurgiaEspecialidadeAno";
-import GraficoAnestesiasPorMes from "./Graficos/GraficoAnestesiasPorMes";
-import GraficoAnestesistasPorAno from "./Graficos/GraficoAnestesistaPorAno";
-import GraficoCirurgiasPorEspecialidadeMes from "./Graficos/GraficoCirurgiaEspecialidadeMes";
-import GraficoCirurgiaoPorMes from "./Graficos/GraficoCirurgiaoPorMes";
-import GraficoCirurgiaoPorAno from "./Graficos/GraficoCirurgiaoPorAno";
+import GraficosHome from "./NavGraficos/GraficosHome";
+import GraficoCirurgioes from "./NavGraficos/GraficoCirurgioes";
 
+// Chart.js
 import {
   Chart as ChartJs,
   LineElement,
@@ -31,8 +26,9 @@ import {
 ChartJs.register(LineElement, BarElement, CategoryScale, LinearScale, PointElement);
 
 const Home = () => {
+  const [graficoSelecionado, setGraficoSelecionado] = useState("totais");
   const [query, setQuery] = useState("");
-  const { documents: posts, loading } = useFetchDocuments("clientesCirurgia", query);
+  const { documents: cirurgias } = useFetchDocuments("clientesCirurgia");
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const { auth } = useAuthentication();
@@ -46,10 +42,28 @@ const Home = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query) {
-      navigate(`/search?q=${query}`);
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
     }
   };
+
+  const renderConteudo = () => {
+    switch (graficoSelecionado) {
+      case "totais":
+        return <GraficosHome cirurgias={cirurgias} />;
+      case "cirurgiao":
+      return <GraficoCirurgioes cirurgias={cirurgias} />; 
+      case "anestesista":
+        return <div>Gráfico de Anestesista</div>;
+      case "canceladas":
+        return <div>Gráfico de Cirurgias Canceladas</div>;
+      default:
+        return <GraficosHome cirurgias={cirurgias} />;
+    }
+  };
+  useEffect(() => {
+  console.log("Gráfico selecionado:", graficoSelecionado);
+}, [graficoSelecionado]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 px-4 py-10 flex flex-col items-center">
@@ -108,57 +122,59 @@ const Home = () => {
             <input
               type="text"
               placeholder="Buscar por paciente, médico ou procedimento..."
+              value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="border text-xs border-green-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-400"
             />
-            <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md">
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md"
+            >
               Pesquisar
             </button>
           </form>
 
           {/* Cards */}
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 w-full max-w-6xl mb-10">
-            <Cards icon={<CiHospital1 />} title="Cirurgias Agendadas Totais"  />
-            <Cards icon={<GiDoctorFace />} title="Cirurgias por Cirurgião"  />
-            <Cards icon={<FaUserDoctor />} title="Cirurgias por Anestesista"  />
-            <Cards icon={<CiHospital1 />} title="Cirurgias Canceladas"  />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Cards
+              icon={<CiHospital1 />}
+              title="Cirurgias Agendadas Totais"
+              onClick={() => setGraficoSelecionado("totais")}
+            />
+            <Cards
+  icon={<GiDoctorFace />}
+  title="Cirurgias por Cirurgião"
+  onClick={() => {
+   
+    setGraficoSelecionado("cirurgiao");
+  }}
+/>
+            <Cards
+              icon={<FaUserDoctor />}
+              title="Cirurgias por Anestesista"
+              onClick={() => setGraficoSelecionado("anestesista")}
+            />
+            <Cards
+              icon={<CiHospital1 />}
+              title="Cirurgias Canceladas"
+              onClick={() => setGraficoSelecionado("canceladas")}
+            />
           </div>
 
-          {/* Gráficos */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
-            <div className="bg-white rounded-md shadow-md p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Cirurgias Agendadas por Mês</h3>
-              {!loading && <GraficoCirurgiasPorMes />}
+          {/* Conteúdo dinâmico */}
+          <div className="mt-10 w-full max-w-6xl">{renderConteudo()}</div>
+
+          {/* Botão Voltar */}
+          {graficoSelecionado !== "totais" && (
+            <div className="flex justify-center mt-4">
+              <button
+                className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                onClick={() => setGraficoSelecionado("totais")}
+              >
+                Voltar
+              </button>
             </div>
-            <div className="bg-white rounded-md shadow-md p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Cirurgias Agendadas por Ano</h3>
-              {!loading && <GraficoCirurgiasPorAno />}
-            </div>
-            <div className="bg-white rounded-md shadow-md p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Cirurgião (por Mês)</h3>
-              {!loading && <GraficoCirurgiaoPorMes />}
-            </div>
-            <div className="bg-white rounded-md shadow-md p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Cirurgião (por Ano)</h3>
-              {!loading && <GraficoCirurgiaoPorAno />}
-            </div>
-            <div className="bg-white rounded-md shadow-md p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Especialidade (por Mês)</h3>
-              {!loading && <GraficoCirurgiasPorEspecialidadeMes />}
-            </div>
-            <div className="bg-white rounded-md shadow-md p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Especialidade (por Ano)</h3>
-              {!loading && <GraficoEspecialidadePorAno />}
-            </div>
-            <div className="bg-white rounded-md shadow-md p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Anestesias Realizadas (por Mês)</h3>
-              {!loading && <GraficoAnestesiasPorMes />}
-            </div>
-            <div className="bg-white rounded-md shadow-md p-4">
-              <h3 className="font-semibold text-green-700 mb-2">Anestesias por Anestesista (por Ano)</h3>
-              {!loading && <GraficoAnestesistasPorAno />}
-            </div>
-          </div>
+          )}
         </>
       )}
     </div>
