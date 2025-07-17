@@ -1,105 +1,163 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFetchDocuments } from "../../hooks/UseFetchDocuments";
+import { useAuthentication } from "../../hooks/useAuthentication";
+import { onAuthStateChanged } from "firebase/auth";
+
+// Ícones
+import { FaUserDoctor } from "react-icons/fa6";
+import { CiHospital1 } from "react-icons/ci";
+import { GiDoctorFace } from "react-icons/gi";
+
+// Componentes
+import Cards from "./Cards/Cards";
+import GraficoCirurgiasPorMes from "./Graficos/GraficoCirurgiasPorMes";
+import GraficoCirurgiasPorAno from "./Graficos/GraficoCirurgiasPorAno";
+import GraficoEspecialidadePorAno from "./Graficos/GraficoCirurgiaEspecialidadeAno";
+import GraficoAnestesiasPorMes from "./Graficos/GraficoAnestesiasPorMes";
+import GraficoAnestesistasPorAno from "./Graficos/GraficoAnestesistaPorAno";
+import GraficoCirurgiasPorEspecialidadeMes from "./Graficos/GraficoCirurgiaEspecialidadeMes";
+import GraficoCirurgiaoPorMes from "./Graficos/GraficoCirurgiaoPorMes";
+import GraficoCirurgiaoPorAno from "./Graficos/GraficoCirurgiaoPorAno";
+
+// Chart.js
+import {
+  Chart as ChartJs,
+  LineElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+} from "chart.js";
+ChartJs.register(LineElement, BarElement, CategoryScale, LinearScale, PointElement);
+
+
 
 const Home = () => {
   const [query, setQuery] = useState("");
   const { documents: posts, loading } = useFetchDocuments("clientesCirurgia", query);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const { auth } = useAuthentication();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, [auth]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query) {
-      return navigate(`/search?q=${query}`);
+      navigate(`/search?q=${query}`);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 px-4 py-10 flex flex-col items-center">
       <h1 className="text-3xl font-bold text-green-700 mb-6 text-center">
-        Procedimentos Cirúrgicos Agendados
+        Bem-vindo ao Sistema de Gestão Cirúrgica
       </h1>
 
-      <form
-        className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 w-full max-w-md"
-        onSubmit={handleSubmit}
-      >
-        <input
-          type="text"
-          placeholder="Buscar por paciente, médico ou procedimento..."
-          onChange={(e) => setQuery(e.target.value)}
-          className="border text-xs border-green-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-400"
-        />
-        <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition duration-300">
-          Pesquisar
-        </button>
-      </form>
-
-      <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
-        {loading && (
-          <p className="text-green-700 text-center font-medium col-span-full">
-            Carregando...
-          </p>
-        )}
-
-        {!loading && posts && posts.length === 0 && (
-          <div className="text-center text-gray-600 mt-8 col-span-full">
-            <p className="mb-4">Nenhum procedimento encontrado.</p>
-            <Link
-              to="/posts/create"
-              className="text-green-600 font-semibold hover:underline"
-            >
-              Criar novo agendamento
-            </Link>
-          </div>
-        )}
-
-        {!loading && posts && posts.length > 0 && (
-          posts.map((clientesCirurgia) => (
-          <div
-            key={clientesCirurgia.id}
-            className="flex flex-col text-center bg-white border border-green-200 rounded-2xl shadow-md p-3 transition hover:shadow-lg w-full sm:max-w-[375px] mx-auto space-y-1"
-          >
-            <h2 className="text-xl font-semibold text-green-700">
-              {clientesCirurgia.cirurgia}
-            </h2>
-            <p className="text-gray-700 text-sm mb-0">
-              <span className="font-semibold">Paciente:</span> {clientesCirurgia.nome}
+      {!user ? (
+        <div className="text-center max-w-2xl">
+          <div className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <h2 className="text-2xl font-semibold text-green-700 mb-4">Acesso Restrito</h2>
+            <p className="text-gray-600 mb-6">
+              Este sistema permite o gerenciamento completo do mapa cirúrgico do seu hospital,
+              desde o agendamento de cirurgias até avaliações anestésicas.
             </p>
-           <p className="text-gray-700 text-sm mb-0">
-                <span className="font-semibold">Mãe:</span> {clientesCirurgia.mae}
-              </p>
-              <p className="text-gray-700 text-sm mb-0">
-                <span className="font-semibold">Data Cirúrgica:</span> {clientesCirurgia.dataProcedimento}
-              </p>
-              <p className="text-gray-700 text-sm mb-0">
-                <span className="font-semibold">Cirurgião:</span> {clientesCirurgia.medico}
-              </p>
-              <p className="text-gray-700 text-sm mb-0">
-                <span className="font-semibold">Horário:</span> {clientesCirurgia.horarioCirurgia}
-              </p>
-            <p className="text-gray-700 text-sm mt-1 mb-0">
-              Avaliado:{" "}
-              <span
-                className={`text-sm rounded-md text-white font-bold px-2 py-1 select-none ${
-                  clientesCirurgia.AvaliacaoAnestesica ? "bg-green-600" : "bg-red-600"
-                }`}
-              >
-                {clientesCirurgia.AvaliacaoAnestesica ? "Sim" : "Não"}
-              </span>
-            </p>
-            <div className="mr-3 flex place-items-center justify-end gap-4 mt-1">
-              <Link
-                to={`/paciente/${clientesCirurgia.id}`}
-                className="text-green-700 font-semibold hover:underline text-sm"
-              >
-                Ver
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link to="/login" className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md">
+                Login
+              </Link>
+              <Link to="/register" className="border border-green-600 text-green-600 hover:bg-green-50 font-semibold py-2 px-6 rounded-md">
+                Cadastre-se
               </Link>
             </div>
           </div>
-        ))
-        )}
-      </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-xl font-semibold text-green-700 mb-3">Gestão Cirúrgica</h3>
+              <p className="text-gray-600">
+                Gerencie todo o mapa cirúrgico do hospital, agenda de cirurgias e realize 
+                avaliações anestésicas de forma integrada.
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-xl font-semibold text-green-700 mb-3">Produtividade</h3>
+              <p className="text-gray-600">
+                Acesse gráficos e informações em tempo real sobre quantidade de cirurgias, 
+                tempo de uso de sala, desempenho de cirurgiões e muito mais.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Campo de busca */}
+          <form
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 w-full max-w-md"
+            onSubmit={handleSubmit}
+          >
+            <input
+              type="text"
+              placeholder="Buscar por paciente, médico ou procedimento..."
+              onChange={(e) => setQuery(e.target.value)}
+              className="border text-xs border-green-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-400"
+            />
+            <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md">
+              Pesquisar
+            </button>
+          </form>
+
+          {/* Cards */}
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 w-full max-w-6xl mb-10">
+            <Cards icon={<CiHospital1 />} title="Cirurgias Agendadas Totais" value="140" />
+            <Cards icon={<GiDoctorFace />} title="Cirurgias por Cirurgião" value="95" />
+            <Cards icon={<FaUserDoctor />} title="Cirurgias por Anestesista" value="87" />
+            <Cards icon={<CiHospital1 />} title="Cirurgias Canceladas" value="10" />
+          </div>
+
+          {/* Gráficos */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
+            <div className=" bg-white rounded-md p-4  shadow-md">
+              <h3 className="font-semibold text-green-700 mb-2">Cirurgias Agendadas por Mês</h3>
+              {!loading && <GraficoCirurgiasPorMes />}
+            </div>
+            <div className=" bg-white rounded-md p-4  shadow-md">
+              <h3 className="font-semibold text-green-700 mb-2">Cirurgias Agendadas por Ano</h3>
+              {!loading && <GraficoCirurgiasPorAno />}
+            </div>
+            <div className=" bg-white rounded-md p-4  shadow-md">
+              <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Cirurgião (por Mês)</h3>
+              {!loading && <GraficoCirurgiaoPorMes />}
+            </div>
+            <div className=" bg-white rounded-md p-4  shadow-md">
+              <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Cirurgião (por Ano)</h3>
+              {!loading && <GraficoCirurgiaoPorAno />}
+            </div>
+            <div className=" bg-white rounded-md p-4  shadow-md">
+              <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Especialidade (por Mês)</h3>
+              {!loading && <GraficoCirurgiasPorEspecialidadeMes />}
+            </div>
+            <div className=" bg-white rounded-md p-4  shadow-md">
+              <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Especialidade (por Ano)</h3>
+              {!loading && <GraficoEspecialidadePorAno />}
+            </div>
+            <div className=" bg-white rounded-md p-4  shadow-md">
+              <h3 className="font-semibold text-green-700 mb-2">Anestesias Realizadas (por Mês)</h3>
+              {!loading && <GraficoAnestesiasPorMes />}
+            </div>
+            <div className=" bg-white rounded-md p-4  shadow-md">
+              <h3 className="font-semibold text-green-700 mb-2">Anestesias por Anestesista (por Ano)</h3>
+              {!loading && <GraficoAnestesistasPorAno />}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

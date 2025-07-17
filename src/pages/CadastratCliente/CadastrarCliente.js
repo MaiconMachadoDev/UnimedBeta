@@ -32,6 +32,7 @@ const CadastrarCliente = () => {
   const [scopiaConflict, setScopiaConflict] = useState(null);
   const [armarioVideoOverride, setArmarioVideoOverride] = useState(false);
   const [armarioVideoConflict, setArmarioVideoConflict] = useState(null);
+  const [Anestesista, setAnestesista] = useState("");
 
   const { user } = useAuthValue();
   const { insertDocument, response } = useInsertDocument("clientesCirurgia");
@@ -185,6 +186,7 @@ const CadastrarCliente = () => {
       uid: user.uid,
       createdBy: user.displayName,
       AvaliacaoAnestesica: false,
+      Anestesista,
     });
 
     navigate("/dashboard");
@@ -349,6 +351,19 @@ const CadastrarCliente = () => {
             />
           </label>
 
+          <label className="flex flex-col">
+            <span className="text-sm text-green-800 mb-1">Vai precisar de Anestesista</span>
+            <select
+              value={Anestesista}
+              onChange={(e) => setAnestesista(e.target.value)}
+              className="px-3 py-2 bg-white border border-green-200 rounded-md"
+              required
+            >
+              <option value="select">Selecione</option>
+              <option value="sim">Sim</option>
+              <option value="não">Não</option>
+            </select>
+          </label>
           <label className="flex flex-col">
             <span className="text-sm text-green-800 mb-1">OPME?</span>
             <select

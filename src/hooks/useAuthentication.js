@@ -9,6 +9,11 @@ import {
   sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
+  deleteUser,
+  reauthenticateWithPopup,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+ 
 } from "firebase/auth";
 import { useState, useEffect } from "react";
 
@@ -137,6 +142,51 @@ export const useAuthentication = () => {
     setLoading(false);
   };
 
+  //atualizar o usuario
+const updateUserName = async (displayName) => {
+  checkIfIsCancelled();
+  if (!displayName?.trim()) return;          // nada para fazer
+  setLoading(true);
+  setError(null);
+
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Usuário não autenticado");
+
+    // evita chamada desnecessária
+    if (user.displayName?.trim() === displayName.trim()) return user;
+
+    await updateProfile(user, { displayName: displayName.trim() });
+    await user.reload();                     // garante sincronia local
+
+    return auth.currentUser;                 // usuário já atualizado
+  } catch (err) {
+    console.error("Erro ao atualizar nome de usuário:", err);
+    setError("Não foi possível atualizar o nome de usuário.");
+    throw err;
+  } finally {
+    setLoading(false);
+  }
+};
+    
+// excluir conta
+
+ const deleteUserAccount = async () => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("Usuário não autenticado.");
+
+  try {
+    // Se for do Google, reautentica com popup
+  
+     
+    await deleteUser(user);
+  } catch (error) {
+    console.error("Erro ao excluir usuário:", error);
+    throw error;
+  }
+};
+
+
   useEffect(() => {
     return () => setCancelled(true);
   }, []);
@@ -149,6 +199,8 @@ export const useAuthentication = () => {
     sendVerification,
     sendPasswordReset,
     signInWithGoogle,
+    updateUserName,
+    deleteUserAccount,
     error,
     loading,
   };
