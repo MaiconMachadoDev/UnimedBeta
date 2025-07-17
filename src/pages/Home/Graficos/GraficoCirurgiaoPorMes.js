@@ -21,7 +21,7 @@ const COLORS = [
   "#14B8A6",
   "#D97706",
   "#DB2777",
-];
+]; // cores para as barras
 
 const CirurgiaoPorMes = () => {
   const { documents } = useFetchDocuments("clientesCirurgia");
@@ -35,9 +35,11 @@ const CirurgiaoPorMes = () => {
     const medicosSet = new Set();
 
     documents.forEach((doc) => {
+      if (!doc.dataProcedimento || !doc.medico) return;
+
       const data = new Date(doc.dataProcedimento);
       const mes = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}`;
-      const medico = doc.medico || "Desconhecido";
+      const medico = doc.medico;
 
       medicosSet.add(medico);
 

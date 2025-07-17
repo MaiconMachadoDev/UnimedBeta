@@ -20,7 +20,6 @@ import GraficoCirurgiasPorEspecialidadeMes from "./Graficos/GraficoCirurgiaEspec
 import GraficoCirurgiaoPorMes from "./Graficos/GraficoCirurgiaoPorMes";
 import GraficoCirurgiaoPorAno from "./Graficos/GraficoCirurgiaoPorAno";
 
-// Chart.js
 import {
   Chart as ChartJs,
   LineElement,
@@ -30,8 +29,6 @@ import {
   PointElement,
 } from "chart.js";
 ChartJs.register(LineElement, BarElement, CategoryScale, LinearScale, PointElement);
-
-
 
 const Home = () => {
   const [query, setQuery] = useState("");
@@ -69,10 +66,16 @@ const Home = () => {
               desde o agendamento de cirurgias até avaliações anestésicas.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/login" className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md">
+              <Link
+                to="/login"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md"
+              >
                 Login
               </Link>
-              <Link to="/register" className="border border-green-600 text-green-600 hover:bg-green-50 font-semibold py-2 px-6 rounded-md">
+              <Link
+                to="/register"
+                className="border border-green-600 text-green-600 hover:bg-green-50 font-semibold py-2 px-6 rounded-md"
+              >
                 Cadastre-se
               </Link>
             </div>
@@ -82,14 +85,14 @@ const Home = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-semibold text-green-700 mb-3">Gestão Cirúrgica</h3>
               <p className="text-gray-600">
-                Gerencie todo o mapa cirúrgico do hospital, agenda de cirurgias e realize 
+                Gerencie todo o mapa cirúrgico do hospital, agenda de cirurgias e realize
                 avaliações anestésicas de forma integrada.
               </p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-semibold text-green-700 mb-3">Produtividade</h3>
               <p className="text-gray-600">
-                Acesse gráficos e informações em tempo real sobre quantidade de cirurgias, 
+                Acesse gráficos e informações em tempo real sobre quantidade de cirurgias,
                 tempo de uso de sala, desempenho de cirurgiões e muito mais.
               </p>
             </div>
@@ -123,35 +126,35 @@ const Home = () => {
 
           {/* Gráficos */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
-            <div className=" bg-white rounded-md p-4  shadow-md">
+            <div>
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias Agendadas por Mês</h3>
               {!loading && <GraficoCirurgiasPorMes />}
             </div>
-            <div className=" bg-white rounded-md p-4  shadow-md">
+            <div>
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias Agendadas por Ano</h3>
               {!loading && <GraficoCirurgiasPorAno />}
             </div>
-            <div className=" bg-white rounded-md p-4  shadow-md">
+            <div>
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Cirurgião (por Mês)</h3>
               {!loading && <GraficoCirurgiaoPorMes />}
             </div>
-            <div className=" bg-white rounded-md p-4  shadow-md">
+            <div>
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Cirurgião (por Ano)</h3>
               {!loading && <GraficoCirurgiaoPorAno />}
             </div>
-            <div className=" bg-white rounded-md p-4  shadow-md">
+            <div>
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Especialidade (por Mês)</h3>
               {!loading && <GraficoCirurgiasPorEspecialidadeMes />}
             </div>
-            <div className=" bg-white rounded-md p-4  shadow-md">
+            <div>
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Especialidade (por Ano)</h3>
               {!loading && <GraficoEspecialidadePorAno />}
             </div>
-            <div className=" bg-white rounded-md p-4  shadow-md">
+            <div>
               <h3 className="font-semibold text-green-700 mb-2">Anestesias Realizadas (por Mês)</h3>
               {!loading && <GraficoAnestesiasPorMes />}
             </div>
-            <div className=" bg-white rounded-md p-4  shadow-md">
+            <div>
               <h3 className="font-semibold text-green-700 mb-2">Anestesias por Anestesista (por Ano)</h3>
               {!loading && <GraficoAnestesistasPorAno />}
             </div>

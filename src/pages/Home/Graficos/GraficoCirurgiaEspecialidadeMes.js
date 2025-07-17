@@ -54,7 +54,7 @@ const EspecialidadePorMes = () => {
     });
 
     const formatted = Object.entries(data).map(([mes, especialidadesObj]) => ({
-      mes,  // chave agora chama mes
+      mes,
       ...especialidadesObj,
     }));
 
@@ -71,7 +71,12 @@ const EspecialidadePorMes = () => {
           <Tooltip />
           <Legend />
           {especialidades.map((esp, index) => (
-            <Bar key={esp} dataKey={esp} fill={COLORS[index % COLORS.length]} name={esp} />
+            <Bar
+              key={esp}
+              dataKey={esp}
+              fill={COLORS[index % COLORS.length]}
+              name={esp}
+            />
           ))}
         </BarChart>
       </ResponsiveContainer>

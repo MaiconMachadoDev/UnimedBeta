@@ -51,6 +51,7 @@ const EspecialidadePorAno = () => {
       data[ano][especialidade]++;
     });
 
+    // Monta o array formatado para o gráfico, com cada ano e as especialidades e seus valores
     const formatted = Object.entries(data).map(([ano, especialidadesObj]) => ({
       ano,
       ...especialidadesObj,
@@ -69,7 +70,12 @@ const EspecialidadePorAno = () => {
           <Tooltip />
           <Legend />
           {especialidades.map((esp, index) => (
-            <Bar key={esp} dataKey={esp} fill={COLORS[index % COLORS.length]} name={esp} />
+            <Bar
+              key={esp}
+              dataKey={esp}
+              fill={COLORS[index % COLORS.length]}
+              name={esp}
+            />
           ))}
         </BarChart>
       </ResponsiveContainer>

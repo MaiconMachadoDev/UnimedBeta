@@ -26,7 +26,7 @@ const AnestesiasPorMes = () => {
   }, [documents]);
 
   return (
-    <div className="w-full h-72 bg-white ">
+    <div className="w-full h-72 bg-white">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData}>
           <XAxis dataKey="mes" />

@@ -35,8 +35,10 @@ const CirurgiaoPorAno = () => {
     const medicosSet = new Set();
 
     documents.forEach((doc) => {
+      if (!doc.dataProcedimento || !doc.medico) return;
+
       const ano = new Date(doc.dataProcedimento).getFullYear();
-      const medico = doc.medico || "Desconhecido";
+      const medico = doc.medico;
 
       medicosSet.add(medico);
 
