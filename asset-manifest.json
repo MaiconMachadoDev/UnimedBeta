@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/UnimedBeta/static/css/main.23eaa779.css",
-    "main.js": "/UnimedBeta/static/js/main.4669e0e0.js",
+    "main.css": "/UnimedBeta/static/css/main.ec773f2d.css",
+    "main.js": "/UnimedBeta/static/js/main.cb366277.js",
     "static/js/453.b6fd5b00.chunk.js": "/UnimedBeta/static/js/453.b6fd5b00.chunk.js",
     "static/media/logoGoogle.png": "/UnimedBeta/static/media/logoGoogle.ff2fec9b8a94a4643fa4.png",
     "index.html": "/UnimedBeta/index.html",
-    "main.23eaa779.css.map": "/UnimedBeta/static/css/main.23eaa779.css.map",
-    "main.4669e0e0.js.map": "/UnimedBeta/static/js/main.4669e0e0.js.map",
+    "main.ec773f2d.css.map": "/UnimedBeta/static/css/main.ec773f2d.css.map",
+    "main.cb366277.js.map": "/UnimedBeta/static/js/main.cb366277.js.map",
     "453.b6fd5b00.chunk.js.map": "/UnimedBeta/static/js/453.b6fd5b00.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.23eaa779.css",
-    "static/js/main.4669e0e0.js"
+    "static/css/main.ec773f2d.css",
+    "static/js/main.cb366277.js"
   ]
 }
