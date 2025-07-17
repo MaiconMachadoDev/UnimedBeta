@@ -118,43 +118,43 @@ const Home = () => {
 
           {/* Cards */}
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 w-full max-w-6xl mb-10">
-            <Cards icon={<CiHospital1 />} title="Cirurgias Agendadas Totais" value="140" />
-            <Cards icon={<GiDoctorFace />} title="Cirurgias por Cirurgião" value="95" />
-            <Cards icon={<FaUserDoctor />} title="Cirurgias por Anestesista" value="87" />
-            <Cards icon={<CiHospital1 />} title="Cirurgias Canceladas" value="10" />
+            <Cards icon={<CiHospital1 />} title="Cirurgias Agendadas Totais"  />
+            <Cards icon={<GiDoctorFace />} title="Cirurgias por Cirurgião"  />
+            <Cards icon={<FaUserDoctor />} title="Cirurgias por Anestesista"  />
+            <Cards icon={<CiHospital1 />} title="Cirurgias Canceladas"  />
           </div>
 
           {/* Gráficos */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
-            <div>
+            <div className="bg-white rounded-md shadow-md p-4">
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias Agendadas por Mês</h3>
               {!loading && <GraficoCirurgiasPorMes />}
             </div>
-            <div>
+            <div className="bg-white rounded-md shadow-md p-4">
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias Agendadas por Ano</h3>
               {!loading && <GraficoCirurgiasPorAno />}
             </div>
-            <div>
+            <div className="bg-white rounded-md shadow-md p-4">
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Cirurgião (por Mês)</h3>
               {!loading && <GraficoCirurgiaoPorMes />}
             </div>
-            <div>
+            <div className="bg-white rounded-md shadow-md p-4">
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Cirurgião (por Ano)</h3>
               {!loading && <GraficoCirurgiaoPorAno />}
             </div>
-            <div>
+            <div className="bg-white rounded-md shadow-md p-4">
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Especialidade (por Mês)</h3>
               {!loading && <GraficoCirurgiasPorEspecialidadeMes />}
             </div>
-            <div>
+            <div className="bg-white rounded-md shadow-md p-4">
               <h3 className="font-semibold text-green-700 mb-2">Cirurgias por Especialidade (por Ano)</h3>
               {!loading && <GraficoEspecialidadePorAno />}
             </div>
-            <div>
+            <div className="bg-white rounded-md shadow-md p-4">
               <h3 className="font-semibold text-green-700 mb-2">Anestesias Realizadas (por Mês)</h3>
               {!loading && <GraficoAnestesiasPorMes />}
             </div>
-            <div>
+            <div className="bg-white rounded-md shadow-md p-4">
               <h3 className="font-semibold text-green-700 mb-2">Anestesias por Anestesista (por Ano)</h3>
               {!loading && <GraficoAnestesistasPorAno />}
             </div>
