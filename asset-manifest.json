@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/UnimedBeta/static/css/main.7a8b03e9.css",
-    "main.js": "/UnimedBeta/static/js/main.1864e320.js",
-    "static/js/453.11cc9f12.chunk.js": "/UnimedBeta/static/js/453.11cc9f12.chunk.js",
+    "main.css": "/UnimedBeta/static/css/main.ca5b5662.css",
+    "main.js": "/UnimedBeta/static/js/main.d050f1fd.js",
+    "static/js/453.b6fd5b00.chunk.js": "/UnimedBeta/static/js/453.b6fd5b00.chunk.js",
     "static/media/logoGoogle.png": "/UnimedBeta/static/media/logoGoogle.ff2fec9b8a94a4643fa4.png",
     "index.html": "/UnimedBeta/index.html",
-    "main.7a8b03e9.css.map": "/UnimedBeta/static/css/main.7a8b03e9.css.map",
-    "main.1864e320.js.map": "/UnimedBeta/static/js/main.1864e320.js.map",
-    "453.11cc9f12.chunk.js.map": "/UnimedBeta/static/js/453.11cc9f12.chunk.js.map"
+    "main.ca5b5662.css.map": "/UnimedBeta/static/css/main.ca5b5662.css.map",
+    "main.d050f1fd.js.map": "/UnimedBeta/static/js/main.d050f1fd.js.map",
+    "453.b6fd5b00.chunk.js.map": "/UnimedBeta/static/js/453.b6fd5b00.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7a8b03e9.css",
-    "static/js/main.1864e320.js"
+    "static/css/main.ca5b5662.css",
+    "static/js/main.d050f1fd.js"
   ]
 }
